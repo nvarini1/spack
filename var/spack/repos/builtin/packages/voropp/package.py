@@ -35,6 +35,14 @@ class Voropp(MakefilePackage):
 
     version('0.4.6', '2338b824c3b7b25590e18e8df5d68af9')
 
+    variant('pic', default=True,
+            description='Produce position-independent code (for shared libs)')
+
+    def url_for_version(self, version):
+        url = "http://math.lbl.gov/voro++/download/dir/voro++-{0}.tar.gz".format(  # noqa: E501
+            str(version))
+        return url
+
     def edit(self, spec, prefix):
         filter_file(r'CC=g\+\+',
                     'CC={0}'.format(self.compiler.cxx),
@@ -42,3 +50,17 @@ class Voropp(MakefilePackage):
         filter_file(r'PREFIX=/usr/local',
                     'PREFIX={0}'.format(self.prefix),
                     'config.mk')
+        if '+pic' in spec:
+            filter_file(r'CFLAGS=',
+                        'CFLAGS=-fPIC ',
+                        'config.mk')
+        filter_file(r'CC=g\+\+',
+                    'CC={0}'.format(self.compiler.cxx),
+                    'config.mk')
+
+    def patch(self):
+        self.edit(self.spec, self.prefix)
+
+    def install(self, spec, prefix):
+        make()
+        make('install')
