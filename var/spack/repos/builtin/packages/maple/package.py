@@ -56,6 +56,13 @@ Maple is an interpreted language."""
 
     version('2017')
 
+    # Licensing
+    license_required = True
+    license_comment = '#'
+    license_files = ['license/license.dat']
+    license_vars     = ['LM_LICENSE_FILE']
+    license_url = "https://www.maplesoft.com/products/Maple/"
+
     def install(self, spec, prefix):
         pass
 
