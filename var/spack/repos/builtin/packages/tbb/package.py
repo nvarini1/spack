@@ -36,7 +36,7 @@ class Tbb(Package):
 
     # Only version-specific URL's work for TBB
     # can also use https://github.com/01org/tbb/releases/
-    version('2017.5', '26f720729d322913912e99d1e4a36bd10625d3ca',
+    version('2017.5', '85b41c64102c052e24d8a39f6193e599',
             url='https://github.com/01org/tbb/archive/2017_U5.tar.gz')
     version('2017.3', '2c451a5bcf6fc31487b98b4b29651c369874277c',
             url='https://www.threadingbuildingblocks.org/sites/default/files/software_releases/source/tbb2017_20161128oss_src.tgz')
