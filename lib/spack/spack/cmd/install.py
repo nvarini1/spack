@@ -74,6 +74,9 @@ the dependencies"""
     subparser.add_argument(
         '--fake', action='store_true', dest='fake',
         help="fake install. just remove prefix and create a fake file")
+    subparser.add_argument(
+        '-f', '--file', action='store_true', dest='file',
+        help="install from file. Read specs to install from .yaml files")
 
     cd_group = subparser.add_mutually_exclusive_group()
     arguments.add_common_arguments(cd_group, ['clean', 'dirty'])
@@ -263,7 +266,7 @@ def junit_output(spec, test_suite):
                     message='Unexpected exception thrown during install',
                     text=text
                 )
-            except:
+            except Exception:
                 # Anything else is also an error
                 duration = time.time() - start_time
                 test_case.set_duration(duration)
@@ -316,9 +319,24 @@ def install(parser, args, **kwargs):
     })
 
     # Spec from cli
-    specs = spack.cmd.parse_specs(args.package, concretize=True)
+    specs = []
+    if args.file:
+        for file in args.package:
+            with open(file, 'r') as f:
+                s = spack.spec.Spec.from_yaml(f)
+
+            if s.concretized().dag_hash() != s.dag_hash():
+                msg = 'skipped invalid file "{0}". '
+                msg += 'The file does not contain a concrete spec.'
+                tty.warn(msg.format(file))
+                continue
+
+            specs.append(s.concretized())
+
+    else:
+        specs = spack.cmd.parse_specs(args.package, concretize=True)
     if len(specs) == 0:
-        tty.error('The `spack install` command requires a spec to install.')
+        tty.die('The `spack install` command requires a spec to install.')
 
     for spec in specs:
         # Check if we were asked to produce some log for dashboards

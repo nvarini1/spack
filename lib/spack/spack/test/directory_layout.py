@@ -32,7 +32,7 @@ import spack
 from spack.directory_layout import (YamlDirectoryLayout,
                                     InvalidDirectoryLayoutParametersError)
 from spack.repository import RepoPath
-from spack.spec import Spec
+from spack.spec import Spec, ConflictsInSpecError
 
 # number of packages to test (to reduce test time)
 max_packages = 10
@@ -225,7 +225,11 @@ def test_find(layout_and_dir, config, builtin_mock):
         if pkg.name.startswith('external'):
             # External package tests cannot be installed
             continue
-        spec = pkg.spec.concretized()
+        try:
+            spec = pkg.spec.concretized()
+        except ConflictsInSpecError:
+            continue
+
         installed_specs[spec.name] = spec
         layout.create_install_directory(spec)
 
