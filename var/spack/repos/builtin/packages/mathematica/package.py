@@ -43,6 +43,7 @@ class Mathematica(Package):
     only_binary = True
 
     version('9.0.1')
+    version('11.1.1')
 
     def install(self, spec, prefix):
         pass
