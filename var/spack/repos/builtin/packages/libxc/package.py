@@ -33,6 +33,7 @@ class Libxc(Package):
     url      = "http://www.tddft.org/programs/octopus/down.php?file=libxc/libxc-2.2.2.tar.gz"
 
     version('3.0.0', '8227fa3053f8fc215bd9d7b0d36de03c')
+    version('2.2.3', '7ac83a377b9564fc2de91ce19f8ffede')
     version('2.2.2', 'd9f90a0d6e36df6c1312b6422280f2ec')
     version('2.2.1', '38dc3a067524baf4f8521d5bb1cd0b8f')
 

@@ -37,24 +37,28 @@ class Cp2k(Package):
     homepage = 'https://www.cp2k.org'
     url = 'https://sourceforge.net/projects/cp2k/files/cp2k-3.0.tar.bz2'
 
+    version('5.1', 'f25cf301aec471d7059179de4dac3ee7')
     version('4.1', 'b0534b530592de15ac89828b1541185e')
     version('3.0', 'c05bc47335f68597a310b1ed75601d35')
 
     variant('mpi', default=True, description='Enable MPI support')
     variant('plumed', default=False, description='Enable PLUMED support')
+    variant('libxc', default=False, description='Enable LibXC support')
+    variant('libxsmm', default=False, description='Enable LibXSMM support (only for Intel architectures)')
 
     depends_on('python', type='build')
 
     depends_on('lapack')
     depends_on('blas')
     depends_on('fftw')
-    depends_on('libint@:1.2', when='@3.0,4.1')
+    depends_on('libint@:1.2', when='@3.0,4.1,5.1')
 
     depends_on('mpi@2:', when='+mpi')
     depends_on('scalapack', when='+mpi')
     depends_on('plumed+shared+mpi', when='+plumed+mpi')
     depends_on('plumed+shared~mpi', when='+plumed~mpi')
-    depends_on('pexsi+fortran', when='+mpi')
+    depends_on('pexsi@0.9.2+fortran', when='@4.1+mpi')
+    depends_on('pexsi@0.10.2+fortran', when='@5.1+mpi')
 
     # Apparently cp2k@4.1 needs an "experimental" version of libwannier.a
     # which is only available contacting the developer directly. See INSTALL
@@ -62,7 +66,11 @@ class Cp2k(Package):
     depends_on('wannier90', when='@3.0+mpi')
     depends_on('elpa', when='+mpi')
 
-    # TODO : add dependency on libsmm, libxsmm
+    depends_on('libxsmm', when='+libxsmm')
+    depends_on('libxc@2.2.3', when='+libxc')
+
+    # TODO : add dependency on libsmm
+
     # TODO : add dependency on CUDA
 
     parallel = False
@@ -224,6 +232,28 @@ class Cp2k(Package):
                         spec['wannier90'].prefix.lib, 'libwannier.a'
                     )
                     libs.append(wannier)
+
+                if 'libxsmm' in spec:
+                    cppflags.append('-D__LIBXSMM')
+                    fcflags.extend([
+                        '-I' + join_path(spec['libxsmm'].prefix.include),
+                    ])
+
+                    libs.extend([
+                        join_path(spec['libxsmm'].prefix.lib, 'libxsmm.a'),
+                        join_path(spec['libxsmm'].prefix.lib, 'libxsmmf.a')
+                    ])
+
+                if 'libxc' in spec:
+                    cppflags.append('-D__LIBXC')
+                    fcflags.extend([
+                        '-I' + join_path(spec['libxc'].prefix.include),
+                    ])
+
+                    libs.extend([
+                        join_path(spec['libxc'].prefix.lib, 'libxcf90.a'),
+                        join_path(spec['libxc'].prefix.lib, 'libxc.a')
+                    ])
 
                 libs.extend(scalapack)
                 libs.extend(self.spec['mpi:cxx'].libs)
