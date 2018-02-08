@@ -43,9 +43,7 @@ class Adf(Package):
         
         run_env.set('ADFBIN', join_path(adf_base, 'bin'))
         run_env.set('ADFHOME', adf_base)
-        run_env.set('ADFBIN', join_path(adf_base, 'bin'))
-        run_env.set('ADFRESOURCES', join_path(adf_base, 'bin'))
-        run_env.set('ADFBIN', join_path(adf_base, 'atomicdata'))
+        run_env.set('ADFRESOURCES', join_path(adf_base, 'atomicdata'))
         
         run_env.set('SCMLICENSE', join_path(adf_base, 'license.txt'))
         run_env.set('SCM_TMPDIR', '/tmp')
