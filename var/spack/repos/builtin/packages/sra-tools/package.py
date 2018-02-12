@@ -37,6 +37,8 @@ class SraTools(Package):
 
     depends_on('ncbi-vdb')
 
+    parallel = False
+
     def install(self, spec, prefix):
         configure(
             '--with-ngs-sdk-prefix=%s' % self.spec['ngs'].prefix,
