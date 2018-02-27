@@ -87,8 +87,8 @@ install:
   - pip install --upgrade setuptools
   - pip install --upgrade codecov
   - pip install --upgrade flake8
-  - if [[ "$TEST_SUITE" == "doc" ]]; then pip install --upgrade sphinx==1.7.0; fi
   - if [[ "$TEST_SUITE" == "doc" ]]; then pip install --upgrade sphinxcontrib-programoutput; fi
+  - if [[ "$TEST_SUITE" == "doc" ]]; then pip install --upgrade sphinx==1.7.0; fi
 
 before_script:
   # Need this for the git tests to succeed.
