@@ -26,8 +26,9 @@ from spack import *
 import os
 import subprocess
 
+
 class Molpro(Package):
-    """Molpro is an ab initio programs for advanced electronic structure calculations."""
+    """Molpro is an ab initio program for electronic structure calculations."""
 
     homepage = "http://www.molpro.net"
     url      = "fake_url.tar.gz"
@@ -45,14 +46,16 @@ class Molpro(Package):
     def install(self, spec, prefix):
         options = ['--prefix=%s' % prefix]
         if '%intel' in spec:
-            options.append("--with-blas-path=%s/lib/intel64" % spec['blas'].prefix)
+            options.append("--with-blas-path=%s/lib/intel64" %
+                           spec['blas'].prefix)
         else:
             options.append("--with-blas-path=%s" % spec['blas'].prefix.lib)
         if '+mpi' in spec:
             options.append('FC=%s' % spec['mpi'].mpifc)
             options.append('CXX=%s' % spec['mpi'].mpicxx)
             if '%intel' in spec:
-                options.append('--enable-mpp=%s/intel64/include' % spec['mpi'].prefix)
+                options.append('--enable-mpp=%s/intel64/include' %
+                               spec['mpi'].prefix)
             else:
                 options.append('--enable-mpp=%s' % spec['mpi'].prefix.include)
         configure(*options)
@@ -62,9 +65,12 @@ class Molpro(Package):
     @run_after('install')
     def clean_binary(self):
         prefix = self.prefix
-        spec = self.spec
-        molpro_file = join_path(prefix, 'molprop_2015_1_linux_x86_64_i8', 'bin', 'molpro')
-        subprocess.call(['sed', '-i', 's#^LAUNCHER="/ssoft/spack.*#LAUNCHER="srun %x"#', molpro_file])
+        molpro_file = join_path(prefix, 'molprop_2015_1_linux_x86_64_i8',
+                                'bin', 'molpro')
+        subprocess.call(['sed', '-i',
+                         's#^LAUNCHER="/ssoft/spack.*#LAUNCHER="srun %x"#',
+                         molpro_file])
 
     def setup_environment(self, spack_env, run_env):
-        run_env.prepend_path('PATH', join_path(self.prefix, 'molprop_2015_1_linux_x86_64_i8', 'bin'))
+        run_env.prepend_path('PATH', join_path(self.prefix,
+                             'molprop_2015_1_linux_x86_64_i8', 'bin'))
