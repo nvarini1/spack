@@ -90,4 +90,8 @@ class Gromacs(CMakePackage):
             options.append('-DCUDA_TOOLKIT_ROOT_DIR:STRING=' +
                            self.spec['cuda'].prefix)
 
+        # Old versions of gromacs identify Skylake as being a Xeon-Phi
+        if '%intel target=x86_S6g1_Mellanox' in self.spec:
+            options.append('-DGMX_SIMD=AVX2_256')
+
         return options
