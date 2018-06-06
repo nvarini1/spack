@@ -44,6 +44,9 @@ class Plplot(CMakePackage):
     variant('wx', default=False, description='Enable WxWidgets')
     variant('wxold', default=False, description='Use WxWidgets old interface')
 
+    extends('python', when='+python')
+    extends('tcl', when='+tcl')
+
     conflicts('~wx', when='+wxold')
     conflicts('+wxold', when='@:5.11')
 
@@ -59,6 +62,7 @@ class Plplot(CMakePackage):
     depends_on('freetype')
     depends_on('gtkplus')
     depends_on('libx11')
+    depends_on('perl')
     depends_on('qhull')
     depends_on('swig')
 
