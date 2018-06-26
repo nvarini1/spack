@@ -180,4 +180,4 @@ class TestPackage(object):
             assert url == 'http://www.doesnotexist.org/url_override-1.0.0.tar.gz'
 
             url = s.package.url_for_version('0.8.1')
-            assert url == 'http://www.anothersite.org/uo-0.8.1.tgz'
+            assert url == 'http://www.doesnotexist.org/url_override-0.8.1.tar.gz'
