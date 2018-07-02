@@ -29,7 +29,7 @@ class Vasp(Package):
     """VASP is a plane wave electronic structure code."""
 
     homepage = "https://www.vasp.at/"
-    url      = "file:///work/sb-it/ddossant/software/vasp5/vasp.5.4.4.tar.gz"
+    url      = "file:///path/to/software/vasp.5.4.4.tar.gz"
 
     # FIXME: Add proper versions and checksums here.
     version('5.4.4', '8ac646b108f974371eef398973373bf6')
@@ -38,15 +38,10 @@ class Vasp(Package):
     depends_on('mpi')
     depends_on('blas')
     depends_on('lapack')
-    depends_on('scalapack', when='%gcc')
-    depends_on('fftw', when='%gcc')
 
     def install(self, spec, prefix):
         if '%intel' in spec:
             arch_file = 'arch/makefile.include.linux_intel'
-        else:
-            arch_file = 'arch/makefile.include.linux_gnu'
-            spack_env.set('FFTW', os.environ['FFTW_ROOT'])
 
         cp = which('cp')
         cp(arch_file, 'makefile.include')
