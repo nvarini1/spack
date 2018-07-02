@@ -23,11 +23,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
-import os
 
 
 class Vasp(Package):
-    """The Vienna Ab initio Simulation Package is a plane wave electronic structure code."""
+    """VASP is a plane wave electronic structure code."""
 
     homepage = "https://www.vasp.at/"
     url      = "file:///work/sb-it/ddossant/software/vasp5/vasp.5.4.4.tar.gz"
@@ -39,10 +38,15 @@ class Vasp(Package):
     depends_on('mpi')
     depends_on('blas')
     depends_on('lapack')
+    depends_on('scalapack', when='%gcc')
+    depends_on('fftw', when='%gcc')
 
     def install(self, spec, prefix):
         if '%intel' in spec:
             arch_file = 'arch/makefile.include.linux_intel'
+        else:
+            arch_file = 'arch/makefile.include.linux_gnu'
+            spack_env.set('FFTW', os.environ['FFTW_ROOT'])
 
         cp = which('cp')
         cp(arch_file, 'makefile.include')
